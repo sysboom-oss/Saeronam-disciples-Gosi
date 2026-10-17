@@ -1,0 +1,398 @@
+<title>제자훈련 2권 성경고시</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+/* Layout: 시험지 한 장 폭의 단일 컬럼. 상단 고정 진행 바, 문항 카드 하나, 하단 조작 버튼. */
+:root{
+  --bg:#EEF1F5; --paper:#FFFFFF; --ink:#1B2433; --muted:#5D6879; --line:#D6DCE5;
+  --accent:#2C4878; --accent-ink:#FFFFFF; --accent-soft:#E2E9F4;
+  --good:#2B7A4B; --good-soft:#E3F2E8; --bad:#B03838; --bad-soft:#F8E4E4; --warn:#9A660F; --warn-soft:#F7EEDB;
+  --display:"Gowun Batang","Nanum Myeongjo","Batang",serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11151C; --paper:#1A2029; --ink:#E5E9EF; --muted:#9AA4B3; --line:#2D3542;
+  --accent:#93B2E6; --accent-ink:#0F1520; --accent-soft:#1E2A3D;
+  --good:#6CC28E; --good-soft:#18291F; --bad:#E78585; --bad-soft:#2E1B1B; --warn:#E0B55C; --warn-soft:#2C2416; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151C; --paper:#1A2029; --ink:#E5E9EF; --muted:#9AA4B3; --line:#2D3542;
+  --accent:#93B2E6; --accent-ink:#0F1520; --accent-soft:#1E2A3D;
+  --good:#6CC28E; --good-soft:#18291F; --bad:#E78585; --bad-soft:#2E1B1B; --warn:#E0B55C; --warn-soft:#2C2416; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:700}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:10px 18px;border-radius:8px;font-weight:500}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.eyebrow{font-size:12.5px;letter-spacing:.08em;color:var(--muted);font-weight:600}
+
+/* 시작 화면 */
+.head{padding-block:36px 20px;border-bottom:2px solid var(--ink);margin-bottom:24px}
+.head h1{font-size:clamp(26px,6vw,36px);line-height:1.3;margin-top:6px}
+.head p{margin:10px 0 0;color:var(--muted)}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:13px;padding:3px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.group{margin-bottom:26px}
+.group>.eyebrow{display:block;margin-bottom:10px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.mode{text-align:left;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.mode b{font-family:var(--display);font-size:18px}
+.mode span{font-size:13.5px;color:var(--muted)}
+.mode[aria-pressed="true"]{border:2px solid var(--accent);padding:13px 15px;background:var(--accent-soft)}
+.mode:disabled{opacity:.45;cursor:default}
+.toggles{display:flex;flex-direction:column;gap:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.seg button{border:0;background:none;color:var(--muted);padding:8px 14px;font-size:14.5px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.row .lbl{min-width:84px;font-size:14px;color:var(--muted)}
+.last{font-size:14px;color:var(--muted);margin-top:14px}
+
+/* 문제 화면 */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;margin-bottom:14px}
+.bar .row{justify-content:space-between}
+.count{font-variant-numeric:tabular-nums;font-size:14px;color:var(--muted)}
+.track{height:4px;background:var(--line);border-radius:4px;margin-top:8px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.quit{border:0;background:none;color:var(--muted);font-size:14px;padding:4px 0;text-decoration:underline}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 20px}
+.qno{font-family:var(--display);font-size:15px;color:var(--accent);font-weight:700;margin-bottom:6px}
+.qtext{font-size:17px;line-height:1.95;word-break:keep-all}
+.qtext input{font:inherit;font-weight:600;color:var(--accent);background:var(--accent-soft);border:0;border-bottom:2px solid var(--accent);border-radius:4px 4px 0 0;padding:0 6px;margin:0 2px;max-width:100%;text-align:center}
+.qtext input.ok{color:var(--good);background:var(--good-soft);border-color:var(--good)}
+.qtext input.no{color:var(--bad);background:var(--bad-soft);border-color:var(--bad)}
+.fix{font-size:14px;font-weight:600;color:var(--good);margin-left:2px}
+.q{font-family:var(--display);font-size:19px;line-height:1.6;word-break:keep-all}
+.ref{font-size:13.5px;color:var(--muted);margin-top:4px}
+.items{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.item{display:flex;align-items:center;gap:10px}
+.item .n{min-width:52px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.item input,textarea{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+.item input.ok{border-color:var(--good);background:var(--good-soft)}
+.item input.no{border-color:var(--bad);background:var(--bad-soft)}
+textarea{width:100%;min-height:140px;margin-top:16px;line-height:1.7;resize:vertical}
+.hint{font-size:13.5px;color:var(--muted);margin-top:10px}
+.answer{margin-top:18px;padding:14px 16px;border-radius:10px;background:var(--accent-soft);font-size:15px;word-break:keep-all}
+.answer .eyebrow{display:block;margin-bottom:4px;color:var(--accent)}
+.answer ol{margin:0;padding-left:1.3em}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.key{font-size:13px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.key.hit{border-color:var(--good);color:var(--good);background:var(--good-soft)}
+.verdict{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:15px;margin-top:14px;padding:4px 12px;border-radius:99px}
+.v-ok{background:var(--good-soft);color:var(--good)} .v-part{background:var(--warn-soft);color:var(--warn)} .v-no{background:var(--bad-soft);color:var(--bad)}
+.self{margin-top:12px}
+.self .seg button{padding:7px 12px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+.nav .right{display:flex;gap:10px;margin-left:auto}
+
+/* 결과 화면 */
+.score{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-block:30px 18px;border-bottom:2px solid var(--ink);margin-bottom:18px}
+.score .big{font-family:var(--display);font-size:72px;line-height:1;font-variant-numeric:tabular-nums}
+.score .big small{font-size:24px;color:var(--muted)}
+.pass{font-weight:700;font-size:15px;padding:4px 14px;border-radius:99px}
+.breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:22px}
+.bd{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--paper)}
+.bd b{font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.bd span{display:block;font-size:13px;color:var(--muted)}
+.review{display:flex;flex-direction:column;gap:10px}
+.rv{border:1px solid var(--line);border-left-width:4px;border-radius:8px;background:var(--paper);padding:12px 14px;font-size:14.5px;word-break:keep-all}
+.rv.s-ok{border-left-color:var(--good)} .rv.s-part{border-left-color:var(--warn)} .rv.s-no{border-left-color:var(--bad)}
+.rv .t{font-weight:600}
+.rv .mine{color:var(--muted);margin-top:4px}
+.rv .cor{margin-top:2px}
+.filter{margin-bottom:12px}
+@media (prefers-reduced-motion:reduce){.track i{transition:none}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* ───────── 문제 데이터 (족보 원문 그대로) ───────── */
+const BLANK=[
+"성경은 살아 계신 하나님의 말씀이다. 우리는 성경이 특별한 [[권위]]가 있는 것처럼 보이도록 애를 쓰거나 장황하게 변명할 필요가 없다. 왜냐하면 성경은 그 자체로 아무도 허물 수 없는 [[권위]]를 가지고 있기 때문이다.",
+"성경은 모두 성령의 [[영감]]으로 기록된 진리로서 거짓이나 잘못이 하나도 없다. 신구약 66권은 [[최종적|최종]]인 계시이며, 그 이상의 계시는 존재하지 않는다. 성경은 인간을 구원하고 하나님의 뜻을 따라 거룩한 생활을 하게 하는 규범으로서 [[온전]]하며 [[충분]]하다.",
+"우리가 성경의 권위를 받아들이는 궁극적인 이유는 주 예수 그리스도의 권위에 기꺼이 [[순종]]할 수 있기 때문이다.",
+"하나님은 오직 한 분이시며 참 신이시다. 하나님 외에 다른 것을 섬기는 것은 [[우상]]이다. 하나님은 창조자시며 섭리자시며 통치자시다. 인간은 하나님께 경배하고, 감사하고, 사랑하고, 순종할 뿐이다. 하나님을 잘 알고 많이 아는 것은 우리 마음을 더욱 [[겸손]]하게 하며, 큰 용기와 위로를 얻게 한다.",
+"예수님의 [[신성]]과 [[인성]]은 구원자로서의 절대 조건이다.",
+"하나님은 한 분이시다. 하나님은 성부와 성자와 성령, 삼위로 계신다. 삼위 하나님은 그 본질과 능력과 영광이 [[동등]]하시다. 성부는 영원 자존자이시다. 성자는 영원토록 성부에게서 탄생하신다. 성령은 영원토록 성부와 성자에게서 나오신다. 삼위 중 한 분이라도 부인하면 하나님을 모두 부인하는 것이 된다.",
+"모든 후손이 아담의 범죄에 동참했다는 가장 좋은 증거는 인간으로 태어나는 사람이 전부 죄를 짓는 [[본성]]을 갖고 있다는 점이다. 타락한 인간은 자신의 힘으로 하나님을 찾을 수 없고, 하나님이 원하시는 선을 행할 수 없다. 인간은 [[구원자]]를 절대적으로 필요로 하는 존재다.",
+"[[은혜]]란 당신의 공로로 얻을 수 있는 것도 아니요, 당신의 무공로로 잃어버릴 수 있는 것도 아니다. [[은혜]]는 우리의 잘잘못을 따지지 않고 주시는 선물이다.",
+"예수님은 삼일 만에 완전한 육체를 가지고 [[부활]]하셨다. 그가 부활하심으로 인류가 구원받을 수 있는 길이 마련되었다. 부활하신 예수님은 만왕의 왕이요, 만유의 주가 되셨다. 그는 지금 하나님 우편에 계시면서 [[재림]]을 준비하고 계신다. 예수님의 부활은 우리 자신의 부활을 보증하는 첫 열매가 되었다. 기독교는 부활 신앙과 함께 서고 쓰러진다. 예수님의 부활을 부인하는 자는 불신자가 아니면 [[이단]]이다.",
+"구약 시대와는 달리 오순절 이후에는 예수님을 믿으면 한 사람도 예외 없이 [[성령]]의 선물을 받을 수 있는 은혜의 시대가 되었다. 성령에 대해 성경적으로 올바르게 이해하는 것은 대단히 중요하다. 어떤 [[체험]]보다 말씀의 가르침을 가지고 정확히 아는 것이 앞서지 않으면 안 된다.",
+"성령은 하나님께서 약속하신 은혜인데, 예수님이 승천하심으로 세상에 임하셨다. 성령은 세상 끝날까지 교회와 함께 하신다. 예수를 믿는 자는 예외 없이 성령을 선물로 받는다. 성령 세례는 [[체험]]을 수반할 수도 있지만, 그렇지 않을 수도 있다. 성령을 받은 그리스도인은 성령을 마음속에 모시고 사는 자들이다.",
+"중생은 하나님이 성령과 말씀을 통해서 하시는 [[단독]] 사역이다. 중생은 구원을 주시기로 작정된 자에게만 허락하시는 특별한 은혜이다. 중생에서 사람은 [[피동적|수동적]]인 입장에 놓여있다. 중생을 받은 자라야 주님의 부르심에 응답할 수 있다. 중생 [[체험]]의 유무는 절대적인 필요조건이 아니다.",
+"믿음은 하나님의 [[선물]]이다. 믿음은 말씀을 들음으로 생기는 것이다. 자기 의지를 강조해서 자기가 믿었다고 생각하는 것은 하나님의 선물이라는 것을 약화시키고, 자기 의를 나타내는 것이다. 믿음은 마음으로 주님을 영접한 다음 입으로 고백하는 것이다. 믿음은 예수 그리스도가 누구시며, 그가 무슨 일을 하셨는지를 그 내용으로 한다. 믿음은 [[회개]]와 [[순종]]의 열매를 수반한다. 믿음은 지·정·의의 요소를 갖추어야 한다.",
+"의롭다 함은 우리의 믿음을 보시고 주시는 하나님의 선물이다. 이것은 우리의 행위나 선한 상태와는 전혀 관계가 없다. 이것은 믿는 자를 하나님 편에서 일방적으로 의롭다고 선언해 주시는 것이다. 하나님이 그렇게 하시는 근거는 예수 그리스도의 [[구속]] 사역 때문이다. 우리 편에서 볼 때 자신에게 많은 악의 요소가 있다 해도 그것으로 의롭다 함을 받은 사실이 의심받을 수 없다.",
+"의롭다 함을 받았다는 사실이, 다시 죄를 짓지 않는다는 것을 의미하는 것은 아니다. 의롭다 함을 받아도 죄를 지을 수 있다. 그러므로 항상 발을 씻는 [[회개]]가 있어야한다. 만일 칭의의 은혜를 받지 못했다면 날마다 죄를 회개할 필요가 없을 것이다. 몸이 더러운 자를 발만 씻긴다고 해서 깨끗해질 수 없기 때문이다. [[칭의]]야말로 우리가 날마다 회개할 수 있는 터전인 것이다.",
+"보혜사는 [[돕는 자|돕는자|돕는 이]]라는 뜻을 갖고 있다. 우리와 더불어 일하길 원하시며, 우리를 그리스도께로 인도하길 원하신다. 그러므로 하나님께서 우리에게 주신 최고의 선물은 바로 '성령'이다.",
+"예수님은 죄 없는 몸으로 인간의 죄를 대신 지고 [[저주]]를 받으셨다. 그의 죽음은 완전한 죽음이었다. 그의 죽음은 율법이 정한 모든 저주의 형벌을 다 담당한 죽음이었다. 그의 희생은 완전하고 영원한 것이어서 다시는 죄를 위해 제사가 필요 없게 되었다. 그의 피로 용서받지 못할 죄는 없다. [[십자가]]는 하나님이 죄인을 향한 사랑의 표현이었다.",
+"예수님을 믿는 자는 모두 [[성령]]을 모시고 사는 자다. 성령이 우리 안에 거하심으로 성령의 소욕과 육신의 소욕에 대한 자의식을 갖게 된다. 성령을 따라 행하면 [[육신]]의 소욕은 자연적으로 위축을 당한다. 성령께서는 우리 안에서 예수 그리스도의 [[인격]]을 형성하는 열매를 맺게 하신다.",
+"[[성령 충만|성령충만]]은 성령 세례를 받는 자가 성령에게 전적으로 사로잡히는 상태이다. 성령 충만은 반복해서 일어나는 일이다. 성령 충만은 게으름이나 죄로 인해서 상실될 수 있다. 성령 충만은 회개하고 기도하면 다시 회복될 수 있다. 성령 충만은 비상시기에 하나님이 그분의 자녀를 특별히 무장시키는 수단일 때가 있다. 성령 충만은 체험을 수반할 수 있으나, 그것이 절대적인 요건은 아니다. 성령 충만의 증거를 항상 체험에서 찾는 것은 바르지 못하며, 그것보다 오히려 생활에서 나타나는 [[거룩]]과 [[순종]]에서 찾아야 한다.",
+"재림은 성경에 남아 있는 마지막 [[예언]]이다. 재림은 예수님의 초림처럼 반드시 성취될 것이다. 재림과 동시에 성도에게는 영생, 악인에게는 영원한 사망이 선고된다. 재림은 이 지구 역사의 [[종말]]을 의미한다. 재림 신앙을 부인하면 예수 그리스도와 성경 말씀 자체를 부인하는 것이다. 재림의 일시는 아무도 모른다. 다만 재림의 [[징조]]를 알 수 있을 뿐이다. 재림의 일시를 말한다거나 성경에서 언급하고 있지 않은 재림 시의 사건을 인위적으로 묘사하는 일은 이단으로 규정할 수 있다."
+];
+
+/* 단답·서술형: list = 항목별 자동채점, essay = 핵심어 확인 후 자가채점 */
+const SHORT=[
+{t:"essay",q:"유기적 영감에 대하여 간략히 쓰시오.",
+ a:"성경의 저자들은 성령의 지혜와 능력과 인도하심에 사로잡혀 있었다. 성령께서는 그들의 환경, 경험, 성격, 교육 등 모든 조건을 최대한 활용하셨다. 동시에 조금도 거짓되거나 틀린 말이 들어가지 않도록 간섭하셨다. 이것을 일컬어 신학적으로 유기적 영감이라 부른다.",
+ keys:["성령","지혜","능력","인도","환경","경험","성격","교육","틀린","간섭"]},
+{t:"list",q:"예수님은 자신이 하나님이라는 사실을 두 가지로 증명하고 계신다. 무엇인가?",ref:"요 14:10~11",
+ items:[["말씀"],["행하는 일","행하신 일","행하는일","일"]],a:["말씀","행하는 일 (예수님의 행하신 일)"]},
+{t:"list",q:"성부 하나님께서 우리를 선택하신 동기, 시기, 방법, 목적을 쓰시오.",ref:"엡 1:1~12",ordered:true,labels:["동기","시기","방법","목적"],
+ items:[["사랑"],["창세 전","창세전"],["그리스도 안","그리스도안"],[{all:["거룩"]},{all:["예배"]}]],
+ a:["동기 – 사랑","시기 – 창세 전에","방법 – 그리스도 안에서","목적 – 우리의 거룩함과 평생 예배자의 삶을 위해서"]},
+{t:"essay",q:"삼위일체를 정의하여 쓰시오.",
+ a:"단일한 신성에 삼위가 계시니 곧 그 본질과 권능과 영원성이 동일하신 성부 하나님, 성자 하나님, 성령 하나님이시다. 삼위는 각각 구별된다.",
+ keys:["단일한 신성","삼위","본질","권능","영원성","동일","성부","성자","성령","구별"]},
+{t:"list",q:"범죄로 인해 피할 수 없게 된 인간의 삼중적인 죽음을 말해 보라.",ref:"엡 2:1, 히 9:27",
+ items:[[{all:["영적"]}],[{all:["육체"]},{all:["육신"]}],[{all:["영원"]}]],a:["영적 죽음","육체적 죽음","영원한 죽음 (죽음 후 심판)"]},
+{t:"list",q:"인간이 어느 정도로 타락하였는가를 로마서 3장 9~18절에서는 어떻게 설명하고 있습니까?",ref:"롬 3:9~18",
+ items:[[{all:["예외"]}],[{all:["무능"]}],[{all:["오염"]}],[{all:["절망"]}]],
+ a:["예외 없는 타락","하나님과 선에 대한 전적인 무능","영과 육의 완전한 오염","절망적인 운명"]},
+{t:"essay",q:"예수님은 자신의 부활을 다시 살아난 육신을 가지고 증명하기보다 성경의 말씀을 가지고 증명하셨다. 우리는 여기서 무엇을 배울 수 있는가?",
+ a:"말씀 중심의 신앙을 확립하라! (말씀 의존적 절대신앙)",keys:["말씀 중심","신앙","확립","말씀 의존","절대신앙"]},
+{t:"list",q:"부활과 함께 예수님이 얻으신 영광은 무엇인가?",ref:"빌 2:9~11",
+ items:[[{all:["이름","위"]},{all:["뛰어난"]}],[{all:["무릎"]}],[{all:["시인"]},{all:["주라"]}]],
+ a:["모든 이름 위에 뛰어난 이름","모든 무릎을 예수의 이름에 꿇게 하심 – 최고의 권세(영예)","모든 입으로 예수를 주라 시인하게 하심 – 주재권의 영광"]},
+{t:"list",q:"예수님의 부활이 우리에게 가져다 준 축복은 무엇인가?",
+ items:[[{all:["의롭"]},{all:["칭의"]}],[{all:["첫 열매"]},{all:["첫열매"]},{all:["부활","소망"]},{all:["보증"]}],[{all:["그리스도","사시"]},{all:["모시"]},{all:["내 안"]},{all:["내안"]}]],
+ a:["우리를 의롭다 하시기 위하여 살아나셨음, 칭의 (롬 4:25)","잠자는 자들의 첫 열매가 되심, 부활의 소망, 부활에 대한 보증 (고전 15:20~21)","내 안에 그리스도께서 사시는 것, 살아계신 주님을 마음에 모시게 됨 (갈 2:20)"]},
+{t:"list",q:"데살로니가 교인들이 중생을 받은 자들이 틀림없다는 증거로, 데살로니가전서 1장 3, 4절에 언급된 증거는 무엇인가?",ref:"살전 1:3~4",
+ items:[["믿음의 역사"],["사랑의 수고"],["소망의 인내"]],a:["믿음의 역사","사랑의 수고","소망의 인내"]},
+{t:"list",q:"갈라디아서 5:22~23에 나오는 성령의 9가지 열매를 쓰시오.",ref:"갈 5:22~23",
+ items:[["사랑"],["희락"],["화평"],["오래 참음","오래참음"],["자비"],["양선"],["충성"],["온유"],["절제"]],
+ a:["사랑, 희락, 화평, 오래 참음, 자비, 양선, 충성, 온유, 절제"]},
+{t:"list",q:"데살로니가 교인들을 통해 생각해 볼 수 있는 중생 받은 세 가지 증거는 무엇인가?",
+ items:[[{all:["믿음","소망","사랑"]}],[{all:["모범"]}],[{all:["전하"]},{all:["전파"]},{all:["전도"]}]],
+ a:["생활에서 나타나는 믿음 소망 사랑의 삶","다른 사람들에게 모범이 되는 삶","예수 그리스도를 어디에서나 전하는 삶"]},
+{t:"essay",q:"'불가항력적인 은혜'의 교리를 정의하고, 이 교리의 유익은 무엇인지 쓰시오.",
+ a:"자유의지로 결단하기 전에 결단하도록 성령께서 이끌어 주셨다. 하나님께서 구원하기로 작정하셨다면 인간은 절대 거부할 수 없다. 우리는 온전히 하나님의 은혜만을 바랄 뿐이다. 즉, 하나님이 믿도록 하시면 아무도 거역할 수 없다.\n유익: 구원의 견고함. 구원의 확신이 자신의 공로나 업적이 아니고 오직 하나님의 은혜에 기인하므로 요동치지 않는 믿음을 갖게 한다.",
+ keys:["자유의지","결단","성령","작정","거부할 수 없","거역","은혜","견고","확신","공로","요동"]},
+{t:"list",q:"성령을 모신 사람에게는 자기 안에 서로가 맞지 않는 두 가지 욕구가 나타난다고 한다. 그것은 무엇인가?",
+ items:[["육체의 소욕","육신의 소욕","육체","육신"],["성령의 소욕","성령"]],a:["육체의 소욕","성령의 소욕"]},
+{t:"list",q:"노아 시대의 사람들처럼 하나님의 심판의 때를 깨닫지 못하는 불행한 사람이 되지 않으려면 어떻게 해야 하는가? (핵심어 4가지)",
+ items:[["말씀"],["예배자","예배"],["성도의 교제","교제"],["복음전도","복음 전도","전도","영혼 구원","영혼구원"]],
+ a:["정기적으로 자신을 주님과 말씀 앞에 세운다 (말씀)","예배자로 하나님 앞에 나를 드린다 (예배자)","그리스도 안의 교제를 통해 항상 준비함으로 깨어 있어야 한다 (성도의 교제)","타인의 영혼 구원에 힘쓰는 사람이 된다 (복음전도)"]},
+{t:"list",q:"죄를 멀리하고 거룩한 생활을 기쁘게 해야 할 긍정적인 동기 두 가지는 무엇인가?",
+ items:[["긍지"],["소망"]],
+ a:["긍지 – 나는 이미 거룩한 사람이다. 그러므로 긍지를 가지고 거룩하게 살아야 한다.","소망 – 나는 예수님처럼 될 사람이다. 그러므로 소망을 가지고 거룩하게 살아야 한다."]},
+{t:"list",q:"노아 시대의 사람들이 심판에 대해 깨닫지 못한 원인 3가지를 누가복음 21장 34절을 가지고 쓰시오.",ref:"눅 21:34",
+ items:[["방탕함","방탕"],["술 취함","술취함"],["생활의 염려","염려"]],
+ a:["방탕함, 술 취함, 생활의 염려로 마음이 둔해졌기 때문이다.","“너희는 스스로 조심하라 그렇지 않으면 방탕함과 술취함과 생활의 염려로 마음이 둔하여지고 뜻밖에 그 날이 덫과 같이 너희에게 임하리라” (눅 21:34)"]}
+];
+
+const BONUS=[
+{title:"새로남교회 비전선언문",text:"예수 그리스도를 알지 못하는 [[이웃]]에게 [[복음]]을 전하여, [[천국의 확신|천국의확신]](영생의 선물)을 가지게 하고, 하나님의 [[말씀]]으로 훈련하여, 하나님 나라의 [[정병]](예수 그리스도의 군사/복음의 증인)으로 세운다."},
+{title:"새로남교회 핵심가치 (새·로·남·교·회)",text:"새생명 탄생을 위하여 [[복음전파|복음 전파]]에 전력 투구한다. 로마서의 기록자 바울같은 [[인재양성|인재 양성]]에 힘써 [[통일]]을 대비한다. 남편과 아내, 그리고 자녀들의 행복을 위하여 [[가정사역|가정 사역]]을 실천한다. 교회가 속해 있는 [[지역사회|지역 사회]]에 적극적으로 봉사한다. 회사생활에 성실하고 창의적인 그리스도인으로 임하여 동료들에게 [[모범]]이 된다."},
+{title:"새로남교회 목회원리",text:"능력보다 [[화목]] · 혼자보다 [[함께]] · 문화보다 [[복음]] · 현재보다 [[미래]] · 나보다 [[주님]]"},
+{title:"새로남교회 직분수행 7원리",text:"① 하나님께 [[영광]]돌리는 원리(爲主榮光原理) 고전 10:31 ② [[주님 우선|주님우선]]원리(先主後私原理) 마 6:33, 빌 2:22 ③ [[형제화합|형제 화합]]원리(兄弟和合原理) 롬 12:18 ④ [[감은봉사|감은 봉사]]원리(感恩奉仕原理) 딤전 1:12 ⑤ 내가 살면 교회 [[죽고]] 내가 죽으면 교회 [[사는]] 원리(我生敎會死 我死敎會生原理) 고전 15:31 ⑥ [[목회동역|목회 동역]]의 원리(牧會同役原理) 롬 16:4 ⑦ [[부흥간구|부흥 간구]]원리(復興懇求原理) 합 3:2"},
+{title:"성도의 교회생활의 기초",text:"1. 영광스런 [[예배자]](주일성수) 2. 신실한 [[봉사자]](직분감당) 3. [[복음전도자|복음 전도자]](영혼구원) 4. 충성된 [[청지기]](온전한 십일조) 5. 생활속의 [[역할모범자|역할 모범자]](사회적 책임 감당)"}
+];
+
+/* ───────── 문항 구성 ───────── */
+const ALL=[];
+BLANK.forEach((text,i)=>ALL.push({id:"b"+(i+1),sec:"괄호",no:i+1,t:"blank",text}));
+SHORT.forEach((s,i)=>ALL.push(Object.assign({id:"s"+(i+1),sec:"단답·서술",no:i+1},s)));
+BONUS.forEach((b,i)=>ALL.push({id:"x"+(i+1),sec:"보너스",no:i+1,t:"blank",text:b.text,title:b.title}));
+const SECS=["괄호","단답·서술","보너스"];
+
+/* ───────── 채점 도구 ───────── */
+const norm=s=>(s||"").replace(/[\s.,·()\[\]'"“”‘’\-–~!?/]/g,"").toLowerCase();
+function parseBlank(text){const parts=[];const re=/\[\[(.+?)\]\]/g;let last=0,m;
+  while((m=re.exec(text))){parts.push({s:text.slice(last,m.index)});parts.push({b:m[1].split("|")});last=re.lastIndex}
+  parts.push({s:text.slice(last)});return parts}
+const blankOk=(v,alts)=>alts.some(a=>norm(v)===norm(a));
+function optMatch(v,opt){const n=norm(v);if(!n)return false;
+  if(typeof opt==="string"){const o=norm(opt);return n===o||n.includes(o)}
+  return opt.all.every(k=>n.includes(norm(k)))}
+const itemMatch=(v,item)=>item.some(o=>optMatch(v,o));
+function gradeList(q,vals){const n=q.items.length;const res=new Array(n).fill(false);
+  if(q.ordered){vals.forEach((v,i)=>res[i]=itemMatch(v,q.items[i]));return res}
+  /* 순서 무관: 이분 매칭 */
+  const owner=new Array(n).fill(-1);
+  function tryIn(i,seen){for(let j=0;j<n;j++){if(seen[j]||!itemMatch(vals[i],q.items[j]))continue;seen[j]=true;
+    if(owner[j]<0||tryIn(owner[j],seen)){owner[j]=i;return true}}return false}
+  for(let i=0;i<n;i++)tryIn(i,[]);
+  owner.forEach(i=>{if(i>=0)res[i]=true});return res}
+function essayHits(q,v){const n=norm(v);return q.keys.map(k=>n.includes(norm(k)))}
+function suggest(r){return r>=.7?1:r>=.35?.5:0}
+
+function grade(q,ans){ans=ans||{};
+  if(q.t==="blank"){const parts=parseBlank(q.text).filter(p=>p.b);const v=ans.v||[];
+    const marks=parts.map((p,i)=>blankOk(v[i],p.b));return {marks,score:marks.filter(Boolean).length/marks.length}}
+  if(q.t==="list"){const v=ans.v||[];const marks=gradeList(q,v);return {marks,score:marks.filter(Boolean).length/marks.length}}
+  const hits=essayHits(q,ans.text);const sug=suggest(hits.filter(Boolean).length/hits.length);
+  return {hits,sug,score:ans.self!=null?ans.self:sug}}
+
+/* ───────── 저장 (이 브라우저에만) ───────── */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ───────── 상태 ───────── */
+const S={mode:"all",instant:true,shuffle:false,list:[],idx:0,ans:{},checked:{}};
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const el=(h)=>{const d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild};
+
+/* ───────── 시작 화면 ───────── */
+function home(){
+  const wrong=store.get("g2-wrong",[]);const last=store.get("g2-last",null);
+  const modes=[["all","실전 모의고사",`전 문항 ${ALL.length}개`],["blank","괄호 문제","OX·괄호 20문항"],
+    ["short","단답·서술형","17문항"],["bonus","보너스 퀴즈","새로남교회 기본 5문항"],
+    ["wrong","틀린 문제만",wrong.length?`지난번 ${wrong.length}문항`:"아직 기록 없음"]];
+  app.innerHTML=`
+  <header class="head"><div class="eyebrow">31기 제자훈련 · 제2권 성경고시 대비</div>
+    <h1>아무도 흔들 수 없는 나의 구원</h1>
+    <p>족보의 괄호·단답·서술·보너스 문제를 그대로 옮긴 연습 시험입니다.</p>
+    <div class="rules"><span class="chip">합격 60점</span><span class="chip">100점 환산</span><span class="chip">빈칸은 띄어쓰기 무관</span></div>
+  </header>
+  <section class="group"><span class="eyebrow">시험 범위</span><div class="modes">
+    ${modes.map(([k,t,d])=>`<button class="mode" data-m="${k}" aria-pressed="${S.mode===k}" ${k==="wrong"&&!wrong.length?"disabled":""}><b>${t}</b><span>${d}</span></button>`).join("")}
+  </div></section>
+  <section class="group"><span class="eyebrow">진행 방식</span><div class="toggles">
+    <div class="row"><span class="lbl">채점</span><div class="seg" id="segI">
+      <button data-v="1" aria-pressed="${S.instant}">문항마다 바로 확인</button><button data-v="0" aria-pressed="${!S.instant}">끝나고 한꺼번에</button></div></div>
+    <div class="row"><span class="lbl">문항 순서</span><div class="seg" id="segS">
+      <button data-v="0" aria-pressed="${!S.shuffle}">족보 순서</button><button data-v="1" aria-pressed="${S.shuffle}">섞기</button></div></div>
+  </div></section>
+  <button class="btn primary" id="go">시험 시작</button>
+  ${last?`<div class="last">지난 기록: ${esc(last.label)} ${last.score}점 (${esc(last.date)})</div>`:""}`;
+  app.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;home()});
+  app.querySelectorAll("#segI button").forEach(b=>b.onclick=()=>{S.instant=b.dataset.v==="1";home()});
+  app.querySelectorAll("#segS button").forEach(b=>b.onclick=()=>{S.shuffle=b.dataset.v==="1";home()});
+  document.getElementById("go").onclick=start;
+}
+function start(){
+  let list;const wrong=store.get("g2-wrong",[]);
+  if(S.mode==="all")list=ALL.slice();
+  else if(S.mode==="blank")list=ALL.filter(q=>q.sec==="괄호");
+  else if(S.mode==="short")list=ALL.filter(q=>q.sec==="단답·서술");
+  else if(S.mode==="bonus")list=ALL.filter(q=>q.sec==="보너스");
+  else list=ALL.filter(q=>wrong.includes(q.id));
+  if(S.shuffle){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}}
+  Object.assign(S,{list,idx:0,ans:{},checked:{}});scrollTo(0,0);render();
+}
+
+/* ───────── 문제 화면 ───────── */
+function render(){
+  const q=S.list[S.idx],a=S.ans[q.id]||(S.ans[q.id]={}),done=S.checked[q.id];
+  const pct=(S.idx/S.list.length*100).toFixed(1);
+  let body="";
+  if(q.t==="blank"){let k=0;
+    body=(q.title?`<div class="q" style="margin-bottom:10px">${esc(q.title)}</div>`:"")+
+      `<div class="qtext">`+parseBlank(q.text).map(p=>{if(p.s!=null)return esc(p.s);const i=k++;
+        const w=Math.max(3.2,p.b[0].length*1.15+1.4);
+        return `<input id="in-${q.id}-${i}" data-i="${i}" style="width:${w}em" autocomplete="off" aria-label="빈칸 ${i+1}" value="${esc((a.v||[])[i]||"")}">`}).join("")+`</div>`;
+  }else if(q.t==="list"){const n=q.items.length;
+    body=`<div class="q">${esc(q.q)}</div>${q.ref?`<div class="ref">${esc(q.ref)}</div>`:""}
+      <div class="items">${q.items.map((_,i)=>`<div class="item"><span class="n">${q.labels?esc(q.labels[i]):(i+1)+")"}</span>
+      <input id="in-${q.id}-${i}" data-i="${i}" autocomplete="off" aria-label="${i+1}번째 답" value="${esc((a.v||[])[i]||"")}"></div>`).join("")}</div>
+      ${!q.ordered&&n>1?`<div class="hint">순서는 상관없습니다. 핵심어 위주로 쓰면 됩니다.</div>`:""}`;
+  }else{
+    body=`<div class="q">${esc(q.q)}</div><textarea id="in-${q.id}" aria-label="답안">${esc(a.text||"")}</textarea>
+      <div class="hint">서술형은 정답을 확인한 뒤 스스로 채점합니다. 핵심어가 얼마나 들어갔는지 함께 보여 드립니다.</div>`;
+  }
+  const last=S.idx===S.list.length-1;
+  app.innerHTML=`
+  <div class="bar"><div class="row"><span class="eyebrow">${esc(q.sec)}</span>
+    <span class="count">${S.idx+1} / ${S.list.length}</span>
+    <button class="quit" id="quit">그만하고 채점</button></div>
+    <div class="track"><i style="width:${pct}%"></i></div></div>
+  <article class="card"><div class="qno">${esc(q.sec)} ${q.no}번</div>${body}<div id="fb"></div></article>
+  <div class="nav"><button class="btn" id="prev" ${S.idx?"":"disabled"}>이전</button>
+    <div class="right">${S.instant&&!done?`<button class="btn primary" id="check">정답 확인</button>`:""}
+    ${(!S.instant||done)?`<button class="btn primary" id="next">${last?"채점하기":"다음 문제"}</button>`:""}</div></div>`;
+
+  const inputs=[...app.querySelectorAll(".card input")];
+  inputs.forEach((inp,i)=>{inp.oninput=()=>{(a.v||(a.v=[]))[+inp.dataset.i]=inp.value};
+    inp.onkeydown=e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();
+      if(inputs[i+1])inputs[i+1].focus();else (document.getElementById("check")||document.getElementById("next"))?.click()}}});
+  const ta=app.querySelector("textarea");if(ta)ta.oninput=()=>a.text=ta.value;
+  if(done)showFeedback(q);
+  else (inputs[0]||ta)?.focus({preventScroll:true});
+
+  document.getElementById("prev").onclick=()=>{S.idx--;render()};
+  document.getElementById("quit").onclick=finish;
+  const c=document.getElementById("check");if(c)c.onclick=()=>{S.checked[q.id]=true;render()};
+  const nx=document.getElementById("next");if(nx)nx.onclick=()=>{if(last)finish();else{S.idx++;render();scrollTo(0,0)}};
+}
+
+function answerBox(q){
+  if(q.t==="blank")return "";
+  const lines=Array.isArray(q.a)?q.a:[q.a];
+  return `<div class="answer"><span class="eyebrow">정답</span>${lines.length>1?`<ol>${lines.map(l=>`<li>${esc(l)}</li>`).join("")}</ol>`:esc(lines[0]).replace(/\n/g,"<br>")}</div>`}
+
+function verdict(s){return s>=1?`<span class="verdict v-ok">맞음</span>`:s>0?`<span class="verdict v-part">부분 정답 · ${Math.round(s*100)}%</span>`:`<span class="verdict v-no">틀림</span>`}
+
+function showFeedback(q){
+  const a=S.ans[q.id]||{},g=grade(q,a),fb=document.getElementById("fb");
+  if(q.t==="blank"){
+    const parts=parseBlank(q.text).filter(p=>p.b);
+    app.querySelectorAll(".card input").forEach((inp,i)=>{inp.readOnly=true;inp.classList.add(g.marks[i]?"ok":"no");
+      if(!g.marks[i])inp.insertAdjacentHTML("afterend",`<span class="fix">→ ${esc(parts[i].b[0])}</span>`)});
+    fb.innerHTML=verdict(g.score);
+  }else if(q.t==="list"){
+    app.querySelectorAll(".card input").forEach((inp,i)=>{inp.readOnly=true;inp.classList.add(g.marks[i]?"ok":"no")});
+    fb.innerHTML=verdict(g.score)+answerBox(q);
+  }else{
+    app.querySelector("textarea").readOnly=true;
+    const cur=a.self!=null?a.self:g.sug;
+    fb.innerHTML=answerBox(q)+`<div class="keys">${q.keys.map((k,i)=>`<span class="key ${g.hits[i]?"hit":""}">${esc(k)}</span>`).join("")}</div>
+      <div class="self row"><span class="lbl">스스로 채점</span><div class="seg">
+      ${[[1,"맞음"],[.5,"부분"],[0,"틀림"]].map(([v,t])=>`<button data-v="${v}" aria-pressed="${cur===v}">${t}</button>`).join("")}</div></div>`;
+    fb.querySelectorAll(".self button").forEach(b=>b.onclick=()=>{a.self=+b.dataset.v;showFeedback(q)});
+  }
+}
+
+/* ───────── 결과 화면 ───────── */
+function userText(q,a){a=a||{};if(q.t==="essay")return a.text||"";return (a.v||[]).map(x=>x||"—").join(" / ")}
+function correctText(q){if(q.t==="blank")return parseBlank(q.text).filter(p=>p.b).map(p=>p.b[0]).join(" / ");
+  return (Array.isArray(q.a)?q.a:[q.a]).join(" / ")}
+let filterWrong=false;
+function finish(){
+  const rows=S.list.map(q=>({q,g:grade(q,S.ans[q.id])}));
+  const total=rows.reduce((s,r)=>s+r.g.score,0);
+  const score=Math.round(total/rows.length*100);
+  const wrong=rows.filter(r=>r.g.score<1).map(r=>r.q.id);
+  const labels={all:"실전 모의고사",blank:"괄호 문제",short:"단답·서술형",bonus:"보너스 퀴즈",wrong:"틀린 문제"};
+  store.set("g2-wrong",wrong);
+  const d=new Date();store.set("g2-last",{score,label:labels[S.mode],date:`${d.getMonth()+1}월 ${d.getDate()}일`});
+  const pass=score>=60;
+  const bySec=SECS.map(s=>{const r=rows.filter(x=>x.q.sec===s);if(!r.length)return "";
+    const ok=r.filter(x=>x.g.score>=1).length;return `<div class="bd"><span>${s}</span><b>${ok} / ${r.length}</b><span>문항 완전 정답</span></div>`}).join("");
+  const essays=rows.filter(r=>r.q.t==="essay"&&S.ans[r.q.id]?.self==null).length;
+  app.innerHTML=`
+  <div class="score"><div><div class="eyebrow">${esc(labels[S.mode])} 결과</div>
+    <div class="big">${score}<small> / 100</small></div></div>
+    <span class="pass ${pass?"v-ok":"v-no"}">${pass?"합격선 통과":"재시험 범위 · 60점 미만"}</span></div>
+  <div class="breakdown">${bySec}</div>
+  ${essays?`<p class="hint">서술형 ${essays}문항은 핵심어 비율로 임시 채점했습니다. 아래에서 맞음·부분·틀림을 고르면 점수가 바로 바뀝니다.</p>`:""}
+  <div class="nav" style="margin-bottom:18px;margin-top:0">
+    <button class="btn primary" id="retry" ${wrong.length?"":"disabled"}>틀린 문제 다시 풀기 (${wrong.length})</button>
+    <button class="btn" id="home">처음으로</button></div>
+  <div class="row filter"><span class="eyebrow">문항별 확인</span><div class="seg" id="segF">
+    <button data-v="0" aria-pressed="${!filterWrong}">전체</button><button data-v="1" aria-pressed="${filterWrong}">틀린 것만</button></div></div>
+  <div class="review">${rows.filter(r=>!filterWrong||r.g.score<1).map(({q,g})=>{
+    const cls=g.score>=1?"s-ok":g.score>0?"s-part":"s-no";
+    const head=q.t==="blank"?(q.title||`괄호 ${q.no}번`):`${q.sec} ${q.no}번 · ${q.q}`;
+    return `<div class="rv ${cls}"><div class="t">${esc(head)}</div>
+      <div class="mine">내 답: ${esc(userText(q,S.ans[q.id])||"(빈칸)")}</div>
+      <div class="cor">정답: ${esc(correctText(q))}</div>
+      ${q.t==="essay"?`<div class="self row"><div class="seg">${[[1,"맞음"],[.5,"부분"],[0,"틀림"]].map(([v,t])=>`<button data-id="${q.id}" data-v="${v}" aria-pressed="${g.score===v}">${t}</button>`).join("")}</div></div>`:""}
+    </div>`}).join("")}</div>`;
+  scrollTo(0,0);
+  document.getElementById("home").onclick=()=>{filterWrong=false;home();scrollTo(0,0)};
+  document.getElementById("retry").onclick=()=>{filterWrong=false;S.mode="wrong";start()};
+  app.querySelectorAll("#segF button").forEach(b=>b.onclick=()=>{filterWrong=b.dataset.v==="1";finish()});
+  app.querySelectorAll(".rv .self button").forEach(b=>b.onclick=()=>{(S.ans[b.dataset.id]||(S.ans[b.dataset.id]={})).self=+b.dataset.v;finish()});
+}
+
+home();
+</script>

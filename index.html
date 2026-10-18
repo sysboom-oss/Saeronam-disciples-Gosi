@@ -119,6 +119,16 @@ textarea{width:100%;min-height:140px;margin-top:16px;line-height:1.7;resize:vert
 .rv .mine{color:var(--muted);margin-top:4px}
 .rv .cor{margin-top:2px}
 .filter{margin-bottom:12px}
+/* 암송 문항 */
+.memo-ref{font-family:var(--display);font-size:28px;font-weight:700;margin-top:4px;line-height:1.3}
+.diffbox{margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px}
+.dlabel{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:8px}
+.diff{font-size:16px;line-height:1.9;word-break:keep-all}
+mark{background:none;color:inherit;border-radius:3px;padding:0 1px}
+mark.miss{background:var(--bad-soft);color:var(--bad);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+mark.extra{background:var(--warn-soft);color:var(--warn);text-decoration:line-through}
+.legend{font-size:12.5px;color:var(--muted);margin-top:10px}
+
 /* 휴대폰 최적화 */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,input,textarea{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -156,7 +166,7 @@ textarea{font-size:16px}
   .nav.static .btn{flex:1 1 100%}
   .score{padding-block:22px 14px}
   .score .big{font-size:60px}
-  .breakdown{grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+  .breakdown{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
   .breakdown .bd{padding:8px 10px}
   .bd b{font-size:19px}
   .rv{font-size:14px}
@@ -251,12 +261,55 @@ const BONUS=[
 {title:"성도의 교회생활의 기초",text:"1. 영광스런 [[예배자]](주일성수) 2. 신실한 [[봉사자]](직분감당) 3. [[복음전도자|복음 전도자]](영혼구원) 4. 충성된 [[청지기]](온전한 십일조) 5. 생활속의 [[역할모범자|역할 모범자]](사회적 책임 감당)"}
 ];
 
+/* ───────── 암송 구절 28개 (사용자 제공 암송표, 개역개정) ───────── */
+const VERSES=/*VERSES*/[{"n": 1, "l": "7과", "t": "성경의 권위", "r": "벧후 1:21", "x": "예언은 언제든지 사람의 뜻으로 낸 것이 아니요 오직 성령의 감동하심을 받은 사람들이 하나님께 받아 말한 것임이라", "k": "사람의 뜻 ✕ → 성령의 감동 → 하나님께 받아", "c": null}, {"n": 2, "l": "7과", "t": "성경의 권위", "r": "수 1:8", "x": "이 율법책을 네 입에서 떠나지 말게 하며 주야로 그것을 묵상하여 그 안에 기록된 대로 다 지켜 행하라 그리하면 네 길이 평탄하게 될 것이며 네가 형통하리라", "k": "입에서 떠나지 말고 → 주야 묵상 → 지켜 행하면 평탄·형통", "c": null}, {"n": 3, "l": "8과", "t": "하나님은 누구신가", "r": "롬 11:36", "x": "이는 만물이 주에게서 나오고 주로 말미암고 주에게로 돌아감이라 그에게 영광이 세세에 있을지어다 아멘", "k": "주에게서 나오고 → 주로 말미암고 → 주에게로 돌아감", "c": null}, {"n": 4, "l": "8과", "t": "하나님은 누구신가", "r": "렘 31:3", "x": "옛적에 여호와께서 나에게 나타나사 내가 영원한 사랑으로 너를 사랑하기에 인자함으로 너를 이끌었다 하였노라", "k": "영원한 사랑 → 인자함으로 이끌었다", "c": null}, {"n": 5, "l": "9과", "t": "예수 그리스도는 누구신가", "r": "히 4:15", "x": "우리에게 있는 대제사장은 우리의 연약함을 동정하지 못하실 이가 아니요 모든 일에 우리와 똑같이 시험을 받으신 이로되 죄는 없으시니라", "k": "연약함 동정 → 똑같이 시험 → 죄는 없으시니라", "c": null}, {"n": 6, "l": "9과", "t": "예수 그리스도는 누구신가", "r": "요 14:6", "x": "예수께서 이르시되 내가 곧 길이요 진리요 생명이니 나로 말미암지 않고는 아버지께로 올 자가 없느니라", "k": "길·진리·생명 → 나로 말미암지 않고는", "c": null}, {"n": 7, "l": "10과", "t": "삼위일체 하나님", "r": "요 1:1", "x": "태초에 말씀이 계시니라 이 말씀이 하나님과 함께 계셨으니 이 말씀은 곧 하나님이시니라", "k": "'말씀' 세 번: 계시니라 → 함께 → 하나님이시니라", "c": null}, {"n": 8, "l": "10과", "t": "삼위일체 하나님", "r": "고후 13:13", "x": "주 예수 그리스도의 은혜와 하나님의 사랑과 성령의 교통하심이 너희 무리와 함께 있을지어다", "k": "은혜(예수) → 사랑(하나님) → 교통(성령)", "c": "고전 12:13과 혼동 주의"}, {"n": 9, "l": "11과", "t": "인간의 타락과 그 결과", "r": "롬 5:12", "x": "그러므로 한 사람으로 말미암아 죄가 세상에 들어오고 죄로 말미암아 사망이 들어왔나니 이와 같이 모든 사람이 죄를 지었으므로 사망이 모든 사람에게 이르렀느니라", "k": "한 사람 → 죄 → 사망 → 모든 사람", "c": "롬 5:8과 혼동 주의"}, {"n": 10, "l": "11과", "t": "인간의 타락과 그 결과", "r": "히 9:27", "x": "한 번 죽는 것은 사람에게 정해진 것이요 그 후에는 심판이 있으리니", "k": "한 번 죽는 것 → 그 후 심판", "c": null}, {"n": 11, "l": "12과", "t": "예수 그리스도의 죽음", "r": "롬 5:8", "x": "우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에 대한 자기의 사랑을 확증하셨느니라", "k": "아직 죄인 → 죽으심 → 사랑 확증", "c": "롬 5:12와 혼동 주의"}, {"n": 12, "l": "12과", "t": "예수 그리스도의 죽음", "r": "갈 3:13", "x": "그리스도께서 우리를 위하여 저주를 받은 바 되사 율법의 저주에서 우리를 속량하셨으니 기록된 바 나무에 달린 자마다 저주 아래에 있는 자라 하였음이라", "k": "저주를 받은 바 되사 → 속량 → 나무에 달린 자", "c": null}, {"n": 13, "l": "13과", "t": "예수 그리스도의 부활", "r": "롬 4:25", "x": "예수는 우리가 범죄한 것 때문에 내줌이 되고 또한 우리를 의롭다 하시기 위하여 살아나셨느니라", "k": "범죄 때문에 내줌 / 의롭다 하시려 살아나심", "c": "롬 4:18과 혼동 주의"}, {"n": 14, "l": "13과", "t": "예수 그리스도의 부활", "r": "갈 2:20", "x": "내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 사는 것이 아니요 오직 내 안에 그리스도께서 사시는 것이라 이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 자신을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라", "k": "함께 못 박혔나니 → 내가 아니요 그리스도 → 믿음 안에서", "c": null}, {"n": 15, "l": "14과", "t": "약속대로 오신 성령", "r": "행 2:38", "x": "베드로가 이르되 너희가 회개하여 각각 예수 그리스도의 이름으로 세례를 받고 죄 사함을 받으라 그리하면 성령의 선물을 받으리니", "k": "회개 → 세례 → 죄 사함 → 성령의 선물", "c": null}, {"n": 16, "l": "14과", "t": "약속대로 오신 성령", "r": "고전 12:13", "x": "우리가 유대인이나 헬라인이나 종이나 자유인이나 다 한 성령으로 세례를 받아 한 몸이 되었고 또 다 한 성령을 마시게 하셨느니라", "k": "유대인·헬라인·종·자유인 → 한 성령 세례 → 한 몸 → 한 성령 마심", "c": "고후 13:13과 혼동 주의"}, {"n": 17, "l": "15과", "t": "거듭난 사람", "r": "딛 3:5", "x": "우리를 구원하시되 우리가 행한 바 의로운 행위로 말미암지 아니하고 오직 그의 긍휼하심을 따라 중생의 씻음과 성령의 새롭게 하심으로 하셨나니", "k": "의로운 행위 ✕ → 긍휼 → 중생의 씻음·성령의 새롭게", "c": null}, {"n": 18, "l": "15과", "t": "거듭난 사람", "r": "살전 1:3-4", "x": "(3) 너희의 믿음의 역사와 사랑의 수고와 우리 주 예수 그리스도에 대한 소망의 인내를 우리 하나님 아버지 앞에서 끊임없이 기억함이니 (4) 하나님의 사랑하심을 받은 형제들아 너희를 택하심을 아노라", "k": "믿음의 역사·사랑의 수고·소망의 인내 → 택하심을 아노라", "c": "살전 4:16-17과 혼동 주의"}, {"n": 19, "l": "16과", "t": "믿음이란 무엇인가", "r": "엡 2:8-9", "x": "(8) 너희는 그 은혜에 의하여 믿음으로 말미암아 구원을 받았으니 이것은 너희에게서 난 것이 아니요 하나님의 선물이라 (9) 행위에서 난 것이 아니니 이는 누구든지 자랑하지 못하게 함이라", "k": "은혜·믿음·선물 → 행위 ✕ → 자랑 ✕", "c": null}, {"n": 20, "l": "16과", "t": "믿음이란 무엇인가", "r": "롬 4:18", "x": "아브라함이 바랄 수 없는 중에 바라고 믿었으니 이는 네 후손이 이같으리라 하신 말씀대로 많은 민족의 조상이 되게 하려 하심이라", "k": "바랄 수 없는 중에 바라고 → 많은 민족의 조상", "c": "롬 4:25와 혼동 주의"}, {"n": 21, "l": "17과", "t": "의롭다함을 받은 은혜", "r": "롬 3:21-22", "x": "(21) 이제는 율법 외에 하나님의 한 의가 나타났으니 율법과 선지자들에게 증거를 받은 것이라 (22) 곧 예수 그리스도를 믿음으로 말미암아 모든 믿는 자에게 미치는 하나님의 의니 차별이 없느니라", "k": "율법 외에 한 의 → 율법·선지자 증거 → 믿는 자에게 차별 없음", "c": null}, {"n": 22, "l": "17과", "t": "의롭다함을 받은 은혜", "r": "롬 8:32", "x": "자기 아들을 아끼지 아니하시고 우리 모든 사람을 위하여 내주신 이가 어찌 그 아들과 함께 모든 것을 우리에게 주시지 아니하겠느냐", "k": "아들 아끼지 않음 → 모든 것 주시지 않겠느냐", "c": "롬 8:26과 혼동 주의"}, {"n": 23, "l": "18과", "t": "우리 안에 계시는 성령", "r": "롬 8:26", "x": "이와 같이 성령도 우리의 연약함을 도우시나니 우리는 마땅히 기도할 바를 알지 못하나 오직 성령이 말할 수 없는 탄식으로 우리를 위하여 친히 간구하시느니라", "k": "연약함 도우심 → 기도할 바 모름 → 탄식으로 간구", "c": "롬 8:32와 혼동 주의"}, {"n": 24, "l": "18과", "t": "우리 안에 계시는 성령", "r": "갈 5:22-23", "x": "(22) 오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 (23) 온유와 절제니 이같은 것을 금지할 법이 없느니라", "k": "아홉 열매 3개씩: 사랑·희락·화평 / 오래 참음·자비·양선 / 충성·온유·절제", "c": null}, {"n": 25, "l": "19과", "t": "그리스도인의 성화", "r": "고후 7:1", "x": "그런즉 사랑하는 자들아 이 약속을 가진 우리는 하나님을 두려워하는 가운데서 거룩함을 온전히 이루어 육과 영의 온갖 더러운 것에서 자신을 깨끗하게 하자", "k": "약속 → 하나님을 두려워함 → 거룩함 온전히 → 육과 영 깨끗", "c": null}, {"n": 26, "l": "19과", "t": "그리스도인의 성화", "r": "요일 3:3", "x": "주를 향하여 이 소망을 가진 자마다 그의 깨끗하심과 같이 자기를 깨끗하게 하느니라", "k": "소망 → 그의 깨끗하심과 같이 → 깨끗하게", "c": null}, {"n": 27, "l": "20과", "t": "예수 그리스도의 재림", "r": "계 22:7", "x": "보라 내가 속히 오리니 이 두루마리의 예언의 말씀을 지키는 자는 복이 있으리라 하더라", "k": "속히 오리니 → 지키는 자 복", "c": null}, {"n": 28, "l": "20과", "t": "예수 그리스도의 재림", "r": "살전 4:16-17", "x": "(16) 주께서 호령과 천사장의 소리와 하나님의 나팔 소리로 친히 하늘로부터 강림하시리니 그리스도 안에서 죽은 자들이 먼저 일어나고 (17) 그 후에 우리 살아 남은 자들도 그들과 함께 구름 속으로 끌어 올려 공중에서 주를 영접하게 하시리니 그리하여 우리가 항상 주와 함께 있으리라", "k": "호령·천사장·나팔 → 죽은 자 먼저 → 끌어올려 → 항상 함께", "c": "살전 1:3-4와 혼동 주의"}];
+
 /* ───────── 문항 구성 ───────── */
 const ALL=[];
 BLANK.forEach((text,i)=>ALL.push({id:"b"+(i+1),sec:"괄호",no:i+1,t:"blank",text}));
 SHORT.forEach((s,i)=>ALL.push(Object.assign({id:"s"+(i+1),sec:"단답·서술",no:i+1},s)));
 BONUS.forEach((b,i)=>ALL.push({id:"x"+(i+1),sec:"보너스",no:i+1,t:"blank",text:b.text,title:b.title}));
-const SECS=["괄호","단답·서술","보너스"];
+const SECS=["괄호","단답·서술","보너스","암송"];
+
+/* 암송 문항 생성: 매번 다른 구절, 최근에 나온 구절은 되도록 제외 */
+const IGN=/[\s.,·()\[\]'"“”‘’\-–~!?/:;]/;
+const stripNo=s=>(s||"").replace(/\(\d+\)\s*/g,"");
+const normV=s=>[...stripNo(s)].filter(c=>!IGN.test(c)).join("");
+const rnd=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const verseTitle=v=>`${v.l} ${v.t} · ${v.r}`;
+function makeFull(v){return {id:"mf"+v.n,sec:"암송",t:"memo",v}}
+function makeBlank(v){
+  const w=stripNo(v.x).trim().split(/\s+/);
+  const cand=rnd(w.map((_,i)=>i).filter(i=>w[i].length>=2));
+  const cnt=w.length>=14?4:3,pick=[];
+  for(const i of cand){if(pick.length>=cnt)break;if(!pick.some(p=>Math.abs(p-i)<2))pick.push(i)}
+  for(const i of cand){if(pick.length>=cnt)break;if(!pick.includes(i))pick.push(i)}
+  return {id:"mb"+v.n,sec:"암송",t:"blank",v,title:verseTitle(v),
+    text:w.map((x,i)=>pick.includes(i)?`[[${x}]]`:x).join(" ")}}
+function pickVerses(k,exclude,recent){
+  const pool=VERSES.filter(v=>!exclude.includes(v.n));
+  const fresh=rnd(pool.filter(v=>!recent.includes(v.n))),rest=rnd(pool.filter(v=>recent.includes(v.n)));
+  return fresh.concat(rest).slice(0,k)}
+function memoSet(){
+  const recent=store.get("g2-recent",[]);
+  const full=pickVerses(2,[],recent),bl=pickVerses(2,full.map(v=>v.n),recent);
+  store.set("g2-recent",[...full,...bl].map(v=>v.n).concat(recent).slice(0,12));
+  return [...full.map(makeFull),...bl.map(makeBlank)]}
+const numberMemo=list=>{let k=0;list.forEach(q=>{if(q.sec==="암송")q.no=++k});return list};
+
+/* 글자 비교(LCS): 틀린 곳 표시용 */
+function lcsMarks(a,b){const n=a.length,m=b.length;const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const ma=new Array(n).fill(false),mb=new Array(m).fill(false);let i=0,j=0;
+  while(i<n&&j<m){if(a[i]===b[j]){ma[i]=mb[j]=true;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}
+  return {ma,mb,len:dp[0][0]}}
+function diffParts(user,ans){
+  const u=stripNo(user),x=stripNo(ans);
+  const ua=[...u].filter(c=>!IGN.test(c)),xa=[...x].filter(c=>!IGN.test(c));
+  const {ma,mb,len}=lcsMarks(ua,xa);
+  const paint=(s,marks,cls)=>{let k=0,out="";for(const c of s){if(IGN.test(c)){out+=esc(c);continue}
+    out+=marks[k++]?esc(c):`<mark class="${cls}">${esc(c)}</mark>`}return out};
+  return {userHTML:paint(u,ma,"extra"),ansHTML:paint(x,mb,"miss"),match:len,total:xa.length}}
 
 /* ───────── 채점 도구 ───────── */
 const norm=s=>(s||"").replace(/[\s.,·()\[\]'"“”‘’\-–~!?/]/g,"").toLowerCase();
@@ -283,6 +336,7 @@ function grade(q,ans){ans=ans||{};
   if(q.t==="blank"){const parts=parseBlank(q.text).filter(p=>p.b);const v=ans.v||[];
     const marks=parts.map((p,i)=>blankOk(v[i],p.b));return {marks,score:marks.filter(Boolean).length/marks.length}}
   if(q.t==="list"){const v=ans.v||[];const marks=gradeList(q,v);return {marks,score:marks.filter(Boolean).length/marks.length}}
+  if(q.t==="memo"){const ok=normV(ans.text)===normV(q.v.x);return {score:ok?1:0}}
   const hits=essayHits(q,ans.text);const sug=suggest(hits.filter(Boolean).length/hits.length);
   return {hits,sug,score:ans.self!=null?ans.self:sug}}
 
@@ -299,14 +353,14 @@ const el=(h)=>{const d=document.createElement("div");d.innerHTML=h.trim();return
 /* ───────── 시작 화면 ───────── */
 function home(){
   const wrong=store.get("g2-wrong",[]);const last=store.get("g2-last",null);
-  const modes=[["all","실전 모의고사",`전 문항 ${ALL.length}개`],["blank","괄호 문제","OX·괄호 20문항"],
+  const modes=[["all","실전 모의고사",`족보 ${ALL.length} + 암송 4문항`],["memo","암송 구절","28구절 전문 쓰기"],["blank","괄호 문제","OX·괄호 20문항"],
     ["short","단답·서술형","17문항"],["bonus","보너스 퀴즈","새로남교회 기본 5문항"],
     ["wrong","틀린 문제만",wrong.length?`지난번 ${wrong.length}문항`:"아직 기록 없음"]];
   app.innerHTML=`
   <header class="head"><div class="eyebrow">31기 제자훈련 · 제2권 성경고시 대비</div>
     <h1>아무도 흔들 수 없는 나의 구원</h1>
-    <p>족보의 괄호·단답·서술·보너스 문제를 그대로 옮긴 연습 시험입니다.</p>
-    <div class="rules"><span class="chip">합격 60점</span><span class="chip">100점 환산</span><span class="chip">빈칸은 띄어쓰기 무관</span></div>
+    <p>족보의 괄호·단답·서술·보너스 문제와 요절 암송 28구절로 구성한 연습 시험입니다. 암송 문항은 볼 때마다 구절이 바뀝니다.</p>
+    <div class="rules"><span class="chip">합격 60점</span><span class="chip">100점 환산</span><span class="chip">암송 전문은 글자 100% 일치</span><span class="chip">띄어쓰기 무관</span></div>
   </header>
   <section class="group"><span class="eyebrow">시험 범위</span><div class="modes">
     ${modes.map(([k,t,d])=>`<button class="mode" data-m="${k}" aria-pressed="${S.mode===k}" ${k==="wrong"&&!wrong.length?"disabled":""}><b>${t}</b><span>${d}</span></button>`).join("")}
@@ -326,12 +380,16 @@ function home(){
 }
 function start(){
   let list;const wrong=store.get("g2-wrong",[]);
-  if(S.mode==="all")list=ALL.slice();
+  if(S.mode==="all")list=ALL.concat(memoSet());
+  else if(S.mode==="memo")list=rnd(VERSES).map(makeFull);
   else if(S.mode==="blank")list=ALL.filter(q=>q.sec==="괄호");
   else if(S.mode==="short")list=ALL.filter(q=>q.sec==="단답·서술");
   else if(S.mode==="bonus")list=ALL.filter(q=>q.sec==="보너스");
-  else list=ALL.filter(q=>wrong.includes(q.id));
-  if(S.shuffle){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}}
+  else list=wrong.map(id=>{const m=/^m([fb])(\d+)$/.exec(id);
+      if(m){const v=VERSES.find(x=>x.n===+m[2]);return v?(m[1]==="f"?makeFull(v):makeBlank(v)):null}
+      return ALL.find(q=>q.id===id)}).filter(Boolean).sort((a,b)=>(a.sec==="암송")-(b.sec==="암송"));
+  numberMemo(list);
+  if(S.shuffle)list=rnd(list);
   Object.assign(S,{list,idx:0,ans:{},checked:{}});scrollTo(0,0);render();
 }
 
@@ -344,7 +402,12 @@ function render(){
     body=(q.title?`<div class="q" style="margin-bottom:10px">${esc(q.title)}</div>`:"")+
       `<div class="qtext">`+parseBlank(q.text).map(p=>{if(p.s!=null)return esc(p.s);const i=k++;
         const w=Math.max(3.2,p.b[0].length*1.15+1.4);
-        return `<input id="in-${q.id}-${i}" data-i="${i}" style="width:${w}em" autocomplete="off" aria-label="빈칸 ${i+1}" value="${esc((a.v||[])[i]||"")}">`}).join("")+`</div>`;
+        return `<input id="in-${q.id}-${i}" data-i="${i}" style="width:${w}em" autocomplete="off" aria-label="빈칸 ${i+1}" value="${esc((a.v||[])[i]||"")}">`}).join("")+`</div>`+
+      (q.v?`<div class="hint">빈칸에 들어갈 말을 조사까지 정확히 쓰세요.</div>`:"");
+  }else if(q.t==="memo"){
+    body=`<div class="eyebrow">${esc(q.v.l)} · ${esc(q.v.t)}</div><div class="memo-ref">${esc(q.v.r)}</div>
+      <div class="ref">위 구절의 본문 전체를 쓰시오. 띄어쓰기는 채점하지 않으며, 글자가 모두 맞아야 정답입니다.</div>
+      <textarea id="in-${q.id}" aria-label="본문 전체" autocomplete="off" autocapitalize="off" spellcheck="false">${esc(a.text||"")}</textarea>`;
   }else if(q.t==="list"){const n=q.items.length;
     body=`<div class="q">${esc(q.q)}</div>${q.ref?`<div class="ref">${esc(q.ref)}</div>`:""}
       <div class="items">${q.items.map((_,i)=>`<div class="item"><span class="n">${q.labels?esc(q.labels[i]):(i+1)+")"}</span>
@@ -392,7 +455,17 @@ function showFeedback(q){
     const parts=parseBlank(q.text).filter(p=>p.b);
     app.querySelectorAll(".card input").forEach((inp,i)=>{inp.readOnly=true;inp.classList.add(g.marks[i]?"ok":"no");
       if(!g.marks[i])inp.insertAdjacentHTML("afterend",`<span class="fix">→ ${esc(parts[i].b[0])}</span>`)});
-    fb.innerHTML=verdict(g.score);
+    fb.innerHTML=verdict(g.score)+(q.v?`<div class="answer"><span class="eyebrow">본문 · ${esc(q.v.r)}</span>${esc(q.v.x)}</div>`:"");
+  }else if(q.t==="memo"){
+    app.querySelector("textarea").readOnly=true;
+    const d=diffParts(a.text||"",q.v.x);
+    fb.innerHTML=verdict(g.score)+
+      (g.score<1?`<div class="diffbox"><span class="eyebrow">글자 비교 · ${d.total}자 중 ${d.match}자 일치</span>
+        <div class="dlabel">내 답</div><div class="diff">${d.userHTML.trim()||"(빈칸)"}</div>
+        <div class="dlabel">정답</div><div class="diff">${d.ansHTML}</div>
+        <div class="legend"><mark class="extra">노란 줄</mark> 정답에 없는 글자 · <mark class="miss">빨간 글자</mark> 빠지거나 틀린 글자</div></div>`
+       :`<div class="answer"><span class="eyebrow">본문 · ${esc(q.v.r)}</span>${esc(q.v.x)}</div>`)+
+      `<div class="hint">핵심 고리: ${esc(q.v.k)}${q.v.c?` · ${esc(q.v.c)}`:""}</div>`;
   }else if(q.t==="list"){
     app.querySelectorAll(".card input").forEach((inp,i)=>{inp.readOnly=true;inp.classList.add(g.marks[i]?"ok":"no")});
     fb.innerHTML=verdict(g.score)+answerBox(q);
@@ -407,8 +480,8 @@ function showFeedback(q){
 }
 
 /* ───────── 결과 화면 ───────── */
-function userText(q,a){a=a||{};if(q.t==="essay")return a.text||"";return (a.v||[]).map(x=>x||"—").join(" / ")}
-function correctText(q){if(q.t==="blank")return parseBlank(q.text).filter(p=>p.b).map(p=>p.b[0]).join(" / ");
+function userText(q,a){a=a||{};if(q.t==="essay"||q.t==="memo")return a.text||"";return (a.v||[]).map(x=>x||"—").join(" / ")}
+function correctText(q){if(q.t==="memo")return q.v.x;if(q.t==="blank")return parseBlank(q.text).filter(p=>p.b).map(p=>p.b[0]).join(" / ");
   return (Array.isArray(q.a)?q.a:[q.a]).join(" / ")}
 let filterWrong=false;
 function finish(){
@@ -416,7 +489,7 @@ function finish(){
   const total=rows.reduce((s,r)=>s+r.g.score,0);
   const score=Math.round(total/rows.length*100);
   const wrong=rows.filter(r=>r.g.score<1).map(r=>r.q.id);
-  const labels={all:"실전 모의고사",blank:"괄호 문제",short:"단답·서술형",bonus:"보너스 퀴즈",wrong:"틀린 문제"};
+  const labels={all:"실전 모의고사",memo:"암송 구절",blank:"괄호 문제",short:"단답·서술형",bonus:"보너스 퀴즈",wrong:"틀린 문제"};
   store.set("g2-wrong",wrong);
   const d=new Date();store.set("g2-last",{score,label:labels[S.mode],date:`${d.getMonth()+1}월 ${d.getDate()}일`});
   const pass=score>=60;
@@ -436,7 +509,7 @@ function finish(){
     <button data-v="0" aria-pressed="${!filterWrong}">전체</button><button data-v="1" aria-pressed="${filterWrong}">틀린 것만</button></div></div>
   <div class="review">${rows.filter(r=>!filterWrong||r.g.score<1).map(({q,g})=>{
     const cls=g.score>=1?"s-ok":g.score>0?"s-part":"s-no";
-    const head=q.t==="blank"?(q.title||`괄호 ${q.no}번`):`${q.sec} ${q.no}번 · ${q.q}`;
+    const head=q.t==="memo"?`암송 ${q.no}번 · ${verseTitle(q.v)} 전문 쓰기`:q.t==="blank"?(q.v?`암송 ${q.no}번 · ${q.title} 빈칸`:(q.title||`괄호 ${q.no}번`)):`${q.sec} ${q.no}번 · ${q.q}`;
     return `<div class="rv ${cls}"><div class="t">${esc(head)}</div>
       <div class="mine">내 답: ${esc(userText(q,S.ans[q.id])||"(빈칸)")}</div>
       <div class="cor">정답: ${esc(correctText(q))}</div>

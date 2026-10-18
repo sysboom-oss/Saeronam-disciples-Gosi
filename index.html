@@ -129,6 +129,45 @@ mark.miss{background:var(--bad-soft);color:var(--bad);font-weight:600;text-decor
 mark.extra{background:var(--warn-soft);color:var(--warn);text-decoration:line-through}
 .legend{font-size:12.5px;color:var(--muted);margin-top:10px}
 
+
+/* 인쇄용 문제지 (화면에서는 숨김) */
+#sheet{display:none}
+.printbox{margin-top:30px;padding-top:20px;border-top:1px solid var(--line)}
+.printbox .btn{margin-top:12px}
+@media print{
+  @page{size:A4;margin:14mm 15mm 15mm}
+  html,body{background:#fff!important;color:#000!important}
+  :root{padding:0!important}
+  body{padding:0!important;font-size:10.5pt}
+  body::before{display:none}
+  #app{display:none!important}
+  #sheet{display:block;color:#000;font-family:var(--display);font-size:10.5pt;line-height:1.7;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #sheet h1{font-size:19pt;margin:2mm 0 3mm;text-align:center}
+  .phead{border-bottom:1.5pt solid #000;padding-bottom:3mm;margin-bottom:4mm}
+  .ptop{display:flex;justify-content:space-between;font-family:var(--body);font-size:8.5pt;color:#333}
+  .pmeta{display:flex;justify-content:space-between;gap:6mm;font-family:var(--body);font-size:10pt}
+  .pmeta i{display:inline-block;width:32mm;border-bottom:.6pt solid #000;margin:0 1mm}
+  .psec h2{font-size:12pt;margin:5mm 0 2mm;padding:1mm 2mm;background:#eef0f3;border-left:3pt solid #000;break-after:avoid}
+  .psec h2 small,.ph small{font-weight:400;font-size:9pt;color:#333}
+  .plist{list-style:none;margin:0;padding:0}
+  .pq{display:flex;gap:2mm;margin:0 0 3.2mm;break-inside:avoid}
+  .pn{flex:0 0 7mm;font-weight:700;text-align:right}
+  .pb{flex:1;min-width:0}
+  .pt{word-break:keep-all;line-height:2.15}
+  .pbk{display:inline-block;border-bottom:.7pt solid #000;height:1em;vertical-align:-1px;margin:0 1mm;max-width:100%}
+  .ph{font-weight:700;word-break:keep-all}
+  .pl{border-bottom:.5pt solid #777;height:8mm}
+  .pitems{display:grid;grid-template-columns:1fr 1fr;column-gap:6mm}
+  .pitems.many{grid-template-columns:1fr 1fr 1fr}
+  .pi{display:flex;align-items:flex-end;gap:1.5mm}
+  .pi span{font-size:9.5pt;white-space:nowrap;padding-bottom:1mm}
+  .pi .pl{flex:1}
+  .pkey{break-before:page;font-family:var(--body);font-size:9pt;line-height:1.55}
+  .pkey h2{font-family:var(--display);font-size:14pt;border-bottom:1.5pt solid #000;padding-bottom:2mm;margin:0 0 3mm}
+  .klist{list-style:none;margin:0;padding:0;column-count:2;column-gap:7mm}
+  .klist li{break-inside:avoid;margin-bottom:1.6mm;word-break:keep-all}
+}
+
 /* 휴대폰 최적화 */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,input,textarea{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -177,6 +216,7 @@ textarea{font-size:16px}
 </head>
 <body>
 <div class="wrap" id="app"></div>
+<div id="sheet" aria-hidden="true"></div>
 
 <script>
 /* ───────── 문제 데이터 (족보 원문 그대로) ───────── */
@@ -345,7 +385,7 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v)
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
 /* ───────── 상태 ───────── */
-const S={mode:"all",instant:true,shuffle:false,list:[],idx:0,ans:{},checked:{}};
+const S={mode:"all",instant:true,shuffle:false,key:true,list:[],idx:0,ans:{},checked:{}};
 const app=document.getElementById("app");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const el=(h)=>{const d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild};
@@ -372,13 +412,26 @@ function home(){
       <button data-v="0" aria-pressed="${!S.shuffle}">족보 순서</button><button data-v="1" aria-pressed="${S.shuffle}">섞기</button></div></div>
   </div></section>
   <button class="btn primary" id="go">시험 시작</button>
-  ${last?`<div class="last">지난 기록: ${esc(last.label)} ${last.score}점 (${esc(last.date)})</div>`:""}`;
+  ${last?`<div class="last">지난 기록: ${esc(last.label)} ${last.score}점 (${esc(last.date)})</div>`:""}
+  ${CAN_PRINT?`<section class="group printbox"><span class="eyebrow">문제지 인쇄 · A4</span><div class="toggles">
+    <div class="row"><span class="lbl">정답지</span><div class="seg" id="segK">
+      <button data-v="1" aria-pressed="${S.key}">함께 인쇄</button><button data-v="0" aria-pressed="${!S.key}">문제지만</button></div></div></div>
+    <button class="btn" id="print">선택한 범위로 문제지 인쇄</button>
+    <div class="hint">위에서 고른 시험 범위가 그대로 인쇄됩니다. 암송 문항은 인쇄할 때마다 구절이 새로 뽑힙니다. PC 인쇄 창에서 대상을 'PDF로 저장'으로 바꾸면 파일로 저장됩니다.</div></section>`
+   :`<div class="hint" style="margin-top:22px">문제지 인쇄는 HTML 파일을 PC나 휴대폰 브라우저에서 직접 열면 사용할 수 있습니다.</div>`}
+  `;
   app.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;home()});
   app.querySelectorAll("#segI button").forEach(b=>b.onclick=()=>{S.instant=b.dataset.v==="1";home()});
   app.querySelectorAll("#segS button").forEach(b=>b.onclick=()=>{S.shuffle=b.dataset.v==="1";home()});
   document.getElementById("go").onclick=start;
+  app.querySelectorAll("#segK button").forEach(b=>b.onclick=()=>{S.key=b.dataset.v==="1";home()});
+  const pb=document.getElementById("print");if(pb)pb.onclick=()=>{fillSheet(S.key);try{window.print()}catch(e){}};
 }
 function start(){
+  const list=buildList(S.shuffle);
+  Object.assign(S,{list,idx:0,ans:{},checked:{}});scrollTo(0,0);render();
+}
+function buildList(shuffle){
   let list;const wrong=store.get("g2-wrong",[]);
   if(S.mode==="all")list=ALL.concat(memoSet());
   else if(S.mode==="memo")list=rnd(VERSES).map(makeFull);
@@ -389,8 +442,46 @@ function start(){
       if(m){const v=VERSES.find(x=>x.n===+m[2]);return v?(m[1]==="f"?makeFull(v):makeBlank(v)):null}
       return ALL.find(q=>q.id===id)}).filter(Boolean).sort((a,b)=>(a.sec==="암송")-(b.sec==="암송"));
   numberMemo(list);
-  if(S.shuffle)list=rnd(list);
-  Object.assign(S,{list,idx:0,ans:{},checked:{}});scrollTo(0,0);render();
+  return shuffle?rnd(list):list;
+}
+
+/* ───────── 문제지 인쇄 ───────── */
+const CAN_PRINT=(()=>{try{return window.self===window.top}catch(e){return false}})();
+const SEC_TITLE={"괄호":"괄호 안에 알맞은 말을 쓰시오.","단답·서술":"다음 물음에 답하시오.","보너스":"새로남교회 기본 내용 (보너스)","암송":"성경 암송"};
+const lines=n=>Array.from({length:n},()=>`<div class="pl"></div>`).join("");
+function sheetBlank(text){return parseBlank(text).map(p=>p.s!=null?esc(p.s):
+  `<span class="pbk" style="width:${Math.max(4,p.b[0].length*1.15+2)}em"></span>`).join("")}
+function sheetItem(q,n){
+  let b="";
+  if(q.t==="blank"){
+    b=(q.v?`<div class="ph">${esc(q.title)} <small>빈칸을 채우시오.</small></div>`:q.title?`<div class="ph">${esc(q.title)}</div>`:"")+`<div class="pt">${sheetBlank(q.text)}</div>`;
+  }else if(q.t==="list"){
+    const many=q.items.length>4;
+    b=`<div class="ph">${esc(q.q)}${q.ref?` <small>(${esc(q.ref)})</small>`:""}</div>
+      <div class="pitems${many?" many":""}">${q.items.map((_,i)=>`<div class="pi"><span>${q.labels?esc(q.labels[i]):(i+1)+")"}</span><div class="pl"></div></div>`).join("")}</div>`;
+  }else if(q.t==="essay"){
+    b=`<div class="ph">${esc(q.q)}</div>${lines(4)}`;
+  }else{
+    b=`<div class="ph">${esc(q.v.l)} ${esc(q.v.t)} · <b>${esc(q.v.r)}</b> <small>본문 전체를 쓰시오.</small></div>${lines(Math.ceil(stripNo(q.v.x).length/34)+1)}`;
+  }
+  return `<li class="pq"><span class="pn">${n}.</span><div class="pb">${b}</div></li>`}
+function keyText(q){
+  if(q.t==="memo")return `${q.v.r} ${stripNo(q.v.x)}`;
+  if(q.t==="blank")return parseBlank(q.text).filter(p=>p.b).map(p=>p.b[0]).join(" / ");
+  return (Array.isArray(q.a)?q.a:[q.a]).join(" / ")}
+function fillSheet(withKey){
+  const list=buildList(false);let n=0;const secs=[];
+  list.forEach(q=>{let g=secs.find(x=>x.s===q.sec);if(!g)secs.push(g={s:q.sec,q:[]});g.q.push(q)});
+  const R=["Ⅰ","Ⅱ","Ⅲ","Ⅳ"];const d=new Date();
+  const labels={all:"실전 모의고사",memo:"암송 구절",blank:"괄호 문제",short:"단답·서술형",bonus:"보너스 퀴즈",wrong:"틀린 문제"};
+  const num=new Map();list.forEach((q,i)=>num.set(q,0));
+  let body=secs.map((g,i)=>`<section class="psec"><h2>${R[i]}. ${esc(g.s)} <small>${esc(SEC_TITLE[g.s]||"")} (${g.q.length}문항)</small></h2>
+    <ol class="plist">${g.q.map(q=>{n++;num.set(q,n);return sheetItem(q,n)}).join("")}</ol></section>`).join("");
+  const head=`<header class="phead"><div class="ptop"><span>31기 제자훈련 · 제2권 성경고시</span><span>${esc(labels[S.mode])} · ${list.length}문항 · 합격 60점</span></div>
+    <h1>아무도 흔들 수 없는 나의 구원</h1>
+    <div class="pmeta"><span>이름 <i></i></span><span>날짜 ${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}.</span><span>점수 <i></i> / 100</span></div></header>`;
+  const key=withKey?`<section class="pkey"><h2>정답</h2><ol class="klist">${list.map(q=>`<li><b>${num.get(q)}.</b> ${esc(keyText(q))}</li>`).join("")}</ol></section>`:"";
+  document.getElementById("sheet").innerHTML=head+body+key;
 }
 
 /* ───────── 문제 화면 ───────── */

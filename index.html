@@ -1,5 +1,15 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EEF1F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11151C" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>제자훈련 2권 성경고시</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
 <style>
@@ -20,6 +30,7 @@
   --accent:#93B2E6; --accent-ink:#0F1520; --accent-soft:#1E2A3D;
   --good:#6CC28E; --good-soft:#18291F; --bad:#E78585; --bad-soft:#2E1B1B; --warn:#E0B55C; --warn-soft:#2C2416; color-scheme:dark}
 *{box-sizing:border-box}
+body,h1,h2,h3,p,.mode,.rv{word-break:keep-all;overflow-wrap:anywhere}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -108,9 +119,53 @@ textarea{width:100%;min-height:140px;margin-top:16px;line-height:1.7;resize:vert
 .rv .mine{color:var(--muted);margin-top:4px}
 .rv .cor{margin-top:2px}
 .filter{margin-bottom:12px}
+/* 휴대폰 최적화 */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,input,textarea{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn,.mode,.seg button{min-height:44px}
+.item input{min-height:44px;font-size:16px}
+textarea{font-size:16px}
+@media (max-width:560px){
+  body{font-size:15.5px;padding-block:0 calc(96px + env(safe-area-inset-bottom,0px))}
+  .head{padding-block:24px 16px;margin-bottom:18px}
+  .head p{font-size:14.5px}
+  .modes{grid-template-columns:1fr 1fr;gap:8px}
+  .mode{padding:12px}
+  .mode[aria-pressed="true"]{padding:11px}
+  .mode b{font-size:16px}
+  .mode span{font-size:12.5px}
+  .row .lbl{min-width:0;width:100%}
+  .seg{display:flex;width:100%}
+  .seg button{flex:1;padding:8px 6px;font-size:14px}
+  #go{width:100%}
+  .card{padding:18px 14px;border-radius:10px}
+  .qtext{font-size:16.5px;line-height:2.05}
+  .qtext input{font-size:16px}
+  .q{font-size:17.5px}
+  .item{gap:8px}
+  .item .n{min-width:34px;font-size:13px}
+  .answer{padding:12px 13px;font-size:14.5px}
+  /* 이전·정답확인·다음 버튼을 엄지가 닿는 화면 하단에 고정 */
+  .nav{position:fixed;left:0;right:0;bottom:0;z-index:6;margin:0;flex-wrap:nowrap;
+    background:var(--bg);border-top:1px solid var(--line);
+    padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .nav .right{flex:1}
+  .nav .right .btn{flex:1}
+  #prev{flex:0 0 auto}
+  .nav.static{position:static;border:0;padding:0;flex-wrap:wrap}
+  .nav.static .btn{flex:1 1 100%}
+  .score{padding-block:22px 14px}
+  .score .big{font-size:60px}
+  .breakdown{grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+  .breakdown .bd{padding:8px 10px}
+  .bd b{font-size:19px}
+  .rv{font-size:14px}
+}
 @media (prefers-reduced-motion:reduce){.track i{transition:none}}
 </style>
 
+</head>
+<body>
 <div class="wrap" id="app"></div>
 
 <script>
@@ -374,7 +429,7 @@ function finish(){
     <span class="pass ${pass?"v-ok":"v-no"}">${pass?"합격선 통과":"재시험 범위 · 60점 미만"}</span></div>
   <div class="breakdown">${bySec}</div>
   ${essays?`<p class="hint">서술형 ${essays}문항은 핵심어 비율로 임시 채점했습니다. 아래에서 맞음·부분·틀림을 고르면 점수가 바로 바뀝니다.</p>`:""}
-  <div class="nav" style="margin-bottom:18px;margin-top:0">
+  <div class="nav static" style="margin-bottom:18px;margin-top:0">
     <button class="btn primary" id="retry" ${wrong.length?"":"disabled"}>틀린 문제 다시 풀기 (${wrong.length})</button>
     <button class="btn" id="home">처음으로</button></div>
   <div class="row filter"><span class="eyebrow">문항별 확인</span><div class="seg" id="segF">
@@ -396,3 +451,6 @@ function finish(){
 
 home();
 </script>
+
+</body>
+</html>
